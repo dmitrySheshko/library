@@ -27,7 +27,9 @@
 						<tr>
 							<td><input type="checkbox" name="bookIds" value="${book.id}" />
 							</td>
-							<td>${book.title}</td>
+							<td>
+								<a href="/book/${book.id}">${book.title}</a>
+							</td>
 							<td>${book.author}</td>
 							<td>${book.category}</td>
 							<td>${book.count} <br /> Заказать/Книги нет в наличии <br />

@@ -5,21 +5,19 @@
 <html>
 <%@ include file="/views/header/header.jsp"%>
 <body>
+
 	<div>
 		<%@ include file="/views/menu/main-menu.jsp"%>
 		<div id="registration">
 			<h2 class="text-center">Sign in</h2>
 			<form action="/auth/sign-in" method="post" class="form-horizontal">
-				<div
-					class="<ex:CssClassHandler defaultClass="form-group" fieldName="login" errorList="${errors}" />">
+				<div class="<ex:CssClassHandler defaultClass="form-group" fieldName="login" errorList="${errors}" />">
 					<label for="login" class="col-sm-4 control-label">Login</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="login"
-							placeholder="Login" name="login" value="${login}">
+						<input type="text" class="form-control" id="login" placeholder="login" name="login" value="${login}">
 					</div>
 				</div>
-				<div
-					class="<ex:CssClassHandler defaultClass="form-group" fieldName="password" errorList="${errors}" />">
+				<div class="<ex:CssClassHandler defaultClass="form-group" fieldName="password" errorList="${errors}" />">
 					<label for="password" class="col-sm-4 control-label">Password</label>
 					<div class="col-sm-8">
 						<input type="password" class="form-control" id="password"

@@ -40,10 +40,19 @@
 		                </td>
 		            </tr>
 		            <tr>
-		                <td>Books count</td>
+		            	<td colspan="3">Books count</td>
+		            </tr>
+		            <tr class="exemplar">
+		                <td>Exemplar</td>
 		                <td>
 		                    <div class="form-group">
-		                        <input class="form-control" type="text" name="count" placeholder="Books count" />
+		                        <div id="exemplars">
+		                        	<div>
+		                        		<input class="form-control" type="text" name="exemplarNumber[]" placeholder="Exemplar number" />
+		                        		<a href="javascript:void(0)" class="remove-exemplar">Remove exemplar</a>
+		                        	</div>
+		                        </div>		                        
+		                        <a href="javascript:void(0)" id="add-exemplar">Add new exemplar</a>
 		                    </div>
 		                </td>
 		            </tr>
@@ -60,7 +69,17 @@
 		</div>
 	</div>
 	<script>
-	
+		var newExemplar = '<div><input class="form-control" type="text" name="exemplarNumber[]" placeholder="Exemplar number" /><a href="javascript:void(0)" class="remove-exemplar">Remove exemplar</a></div>';
+		var exemplars = document.getElementById("exemplars");
+		document.getElementById("add-exemplar").onclick = function(){
+			exemplars.innerHTML += newExemplar;
+		}
+		
+		document.getElementById("exemplars").addEventListener('click', function(event){
+			if(event.target.classList.contains('remove-exemplar')){
+				event.target.parentNode.remove();
+			}
+		});
 	</script>
 </body>
 </html>
