@@ -32,10 +32,40 @@ public class SignInServlet extends HttpServlet {
 			doGet(request, response);
 		}
 		else {
+			User user = new User();
 			try {
-				User user = authService.findUser(login, password);
+				user = authService.findUser(login, password);
 			} catch (SQLException e) {
 				e.printStackTrace();
+				//TODO db error
+				errors.add(new ValidationError("Undefined", "An undefined error, try again, please!"));
+				request.setAttribute("errors", errors);
+				request.setAttribute("login", login);
+				doGet(request, response);
+			}
+			if(user != null){
+                request.getSession().setAttribute("sessionUser", user);
+                switch (user.getRole()){
+                case 1://ADMIN
+                    response.sendRedirect("/auth/sign-up");//redirect to books page if a reader
+                    break;
+                case 2://LIBRARIAN
+                    response.sendRedirect("/orders");//redirect to books page if a reader
+                    break;
+                case 3://READER
+                    response.sendRedirect("/books");//redirect to books page if a reader
+                    break;
+                default:
+                    response.sendRedirect("/");//redirect to main page
+                    break;
+            }
+            }
+			else {
+				//TODO User not found
+				errors.add(new ValidationError("login", "User with current login and password wasn't found"));
+				request.setAttribute("errors", errors);
+				request.setAttribute("login", login);
+				doGet(request, response);
 			}
 		}
 	}

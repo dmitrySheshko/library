@@ -1,5 +1,7 @@
 package com.library.users;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class User {
 	private int id;
 	private String login;
@@ -8,6 +10,17 @@ public class User {
 	private String firstName;
 	private String lastName;
 	private int role;
+	
+	public User(){}
+	
+	public User(HttpServletRequest request){
+		this.login = request.getParameter("login");
+        this.password = request.getParameter("password");
+        this.confirmPassword = request.getParameter("confirmPassword");
+        this.firstName = request.getParameter("firstName");
+        this.lastName = request.getParameter("lastName");
+        this.setRole(request.getParameter("role"));
+	}
 
 	public void setId(int id) {
 		this.id = id;
@@ -55,6 +68,15 @@ public class User {
 
 	public String getLastName() {
 		return this.lastName;
+	}
+
+	public void setRole(String role) {
+		if(role == null){
+			this.role = 3;//READER
+		}
+		else {
+			this.role = Integer.parseInt(role);
+		}
 	}
 
 	public void setRole(int role) {

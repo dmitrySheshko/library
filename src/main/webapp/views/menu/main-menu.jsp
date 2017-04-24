@@ -8,7 +8,7 @@
             <li>
                 <a href="/books">Books</a>
             </li>
-            <c:if test="${sessionUser != null && sessionUser.role != 'READER'}">
+            <c:if test="${sessionUser != null && sessionUser.role != 3}">
                 <li>
                     <a href="/orders">Orders</a>
                 </li>
@@ -22,7 +22,7 @@
                     <a href="/add-category">Add category</a>
                 </li>
             </c:if>
-            <c:if test="${sessionUser != null && sessionUser.role == 'ADMIN'}">
+            <c:if test="${sessionUser != null && sessionUser.role == 1}">
                 <li>
                     <a href="/auth/sign-up">Registration new user</a>
                 </li>

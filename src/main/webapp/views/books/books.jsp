@@ -10,7 +10,7 @@
 			<h1>Books</h1>
 			<%@ include file="/views/books/filter/filter.jsp"%>
 
-			<c:if test="${sessionUser != null && sessionUser.role != 'READER'}">
+			<c:if test="${sessionUser != null && sessionUser.role != 3}">
 				<a href="/add-book">Add book</a>
 			</c:if>
 
