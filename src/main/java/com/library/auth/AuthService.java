@@ -12,11 +12,11 @@ public class AuthService {
 	
 	public ArrayList<ValidationError> signInValidation(String login, String password){
 		ArrayList<ValidationError> errors = new ArrayList<ValidationError>();
-		ValidationError loginError = checkLogin(login);
+		ValidationError loginError = isEmpty(login, "login", "Login field is empty!");
         if(loginError != null){
             errors.add(loginError);
         }
-        ValidationError passwordError = checkPassword(password);
+        ValidationError passwordError = isEmpty(password, "password", "Password field is empty!");
         if(passwordError != null){
             errors.add(passwordError);
         }
@@ -26,17 +26,17 @@ public class AuthService {
 	public ArrayList<ValidationError> signUpValidation(User user){
 		ArrayList<ValidationError> errors = new ArrayList<ValidationError>();
 		//check an user first name
-		ValidationError firstNameError = checkFirstName(user.getFirstName());
+		ValidationError firstNameError = isEmpty(user.getFirstName(), "firstName", "First name field is empty!");
         if(firstNameError != null){
             errors.add(firstNameError);
         }
 		//check an user last name
-        ValidationError lastNameError = checkLastName(user.getLastName());
+        ValidationError lastNameError = isEmpty(user.getLastName(), "lastName", "Last name field is empty!");
         if(lastNameError != null){
             errors.add(lastNameError);
         }
 		//check an user login
-		ValidationError loginError = checkLogin(user.getLogin());
+		ValidationError loginError = isEmpty(user.getLogin(), "login", "Login field is empty!");
         if(loginError != null){
             errors.add(loginError);
         }
@@ -52,7 +52,7 @@ public class AuthService {
 			}
         }
         //check an user password
-        ValidationError passwordError = checkPassword(user.getPassword());
+        ValidationError passwordError = isEmpty(user.getPassword(), "password", "Password field is empty!");
         if(passwordError != null){
             errors.add(passwordError);
         }
@@ -72,33 +72,12 @@ public class AuthService {
 		return daoUser.find(login);
 	}
 	
-	private ValidationError checkFirstName(String firstName){
-        if(firstName == null || firstName.trim().length() == 0){
-            return new ValidationError("firstName", "First name field is empty!");
+	public ValidationError isEmpty(String value, String fieldName, String errorMessage){
+		if(value == null || value.trim().length() == 0){
+            return new ValidationError(fieldName, errorMessage);
         }
-        return null;
-    }
-	
-	private ValidationError checkLastName(String lastName){
-        if(lastName == null || lastName.trim().length() == 0){
-            return new ValidationError("lastName", "Last name field is empty!");
-        }
-        return null;
-    }
-	
-	private ValidationError checkLogin(String login){
-        if(login == null || login.trim().length() == 0){
-            return new ValidationError("login", "Login field is empty!");
-        }
-        return null;
-    }
-	
-	private ValidationError checkPassword(String password) {
-        if(password == null || password.trim().length() == 0){
-            return new ValidationError("password", "Password field is empty!");
-        }
-        return null;
-    }
+		return null;
+	}
 	
 	private ValidationError checkPassword(String password, String confirmPassword) {
         if(!password.equals(confirmPassword)){
