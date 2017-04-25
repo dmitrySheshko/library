@@ -28,12 +28,28 @@
 							<td><input type="checkbox" name="bookIds" value="${book.id}" />
 							</td>
 							<td>
-								<a href="/book/${book.id}">${book.title}</a>
+								<c:if test="${sessionUser == null || (sessionUser != null && sessionUser.role == 3)}">
+									${book.title}
+								</c:if>
+								<c:if test="${sessionUser != null && sessionUser.role != 3}">
+									<a href="/book/${book.id}">${book.title}</a>
+								</c:if>
+								
 							</td>
 							<td>${book.author}</td>
 							<td>${book.category.name}</td>
-							<td>Count ???? <br /> Заказать/Книги нет в наличии <br />
-								если библиотекарь - редактировать и инфу по книге
+							<td>
+								<c:if test="${book.count == 0}">
+									not avalible!
+								</c:if>
+								<c:if test="${book.count != 0}">
+									<c:if test="${sessionUser != null && sessionUser.role == 3}">
+										<a href="javascript:void(0);">Order</a>
+									</c:if>
+									<c:if test="${sessionUser != null && sessionUser.role != 3}">
+										${book.count}
+									</c:if>
+								</c:if>
 							</td>
 						</tr>
 					</c:forEach>

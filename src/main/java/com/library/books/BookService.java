@@ -6,10 +6,12 @@ import java.util.List;
 
 import com.library.category.Category;
 import com.library.errors.ValidationError;
+import com.library.exemplars.DAOExemplar;
 
 public class BookService {
 
 	private DAOBook daoBook = new DAOBook();
+	private DAOExemplar daoExemplar = new DAOExemplar();
 	
 	public ArrayList<Book> getBooks() throws SQLException{
 		return daoBook.findAll();
@@ -68,8 +70,21 @@ public class BookService {
 		return null;
 	}
 	
-	public void create(Book book){
-		//save book
-		//save exemplars
+	public ArrayList<ValidationError> create(Book book) throws SQLException{
+		ArrayList<ValidationError> error = new ArrayList<ValidationError>();
+		int bookId = daoBook.create(book);
+		if(bookId != 0){
+			try {
+				daoExemplar.saveExemplars(book.getExemplars(), bookId);
+			}
+			catch(SQLException e){
+				error.add(new ValidationError("exemplars", "Please, check book's exemplars numbers!"));
+				daoBook.delete(bookId);
+			}
+		}
+		else {
+			error.add(new ValidationError("undefined", "Ups, something wrong!"));
+		}
+		return error;
 	}
 }

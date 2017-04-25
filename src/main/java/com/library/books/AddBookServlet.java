@@ -42,9 +42,21 @@ public class AddBookServlet extends HttpServlet {
 			doGet(request, response);
 		}
 		else {
-			
-			request.setAttribute("message", "The book was created!");
-			doGet(request, response);
+			try {
+				errors = bookService.create(book);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			if(errors != null && errors.size() != 0){
+				request.setAttribute("book", book);
+				request.setAttribute("errors", errors);
+				doGet(request, response);
+			}
+			else {
+				request.setAttribute("message", "The book was created!");
+				doGet(request, response);
+			}
 		}
 	}
 	

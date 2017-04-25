@@ -22,3 +22,10 @@
 .add-book input[name="count"].form-control {
 	width: 70px; 
 }
+.add-book #exemplars .input-group {
+	width: 150px;
+	margin-bottom: 15px;
+}
+.add-book #exemplars .input-group input {
+	width: 210px;
+}

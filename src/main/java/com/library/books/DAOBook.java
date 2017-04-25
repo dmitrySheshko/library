@@ -16,7 +16,7 @@ public class DAOBook {
 
 	public ArrayList<Book> findAll() throws SQLException {
 		ArrayList<Book> books = new ArrayList<Book>();
-		String sql = "SELECT b.*, c.id as categoryId, c.name FROM books b, categories c WHERE b.category = c.id";
+		String sql = "SELECT b.*, c.id as categoryId, c.name, (SELECT COUNT(*) FROM exemplars e WHERE e.book_id = b.id AND e.status = 1) AS count FROM books b LEFT JOIN categories c ON b.category = c.id";
 		Connection con = dbConnection.getConnection();
 		PreparedStatement pstm = con.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
@@ -27,7 +27,7 @@ public class DAOBook {
 			book.setTitle(rs.getString("title"));
 			book.setAuthor(rs.getString("author"));
 			book.setCategory(new Category(rs.getInt("categoryId"), rs.getString("name")));
-			// book.setCount(rs.getInt("count"));
+			book.setCount(rs.getInt("count"));
 			books.add(book);
 		}
 		rs.close();
@@ -55,5 +55,15 @@ public class DAOBook {
 		pstm.close();
 		dbConnection.closeConnection(con);
 		return id;
+	}
+	
+	public void delete(int bookId) throws SQLException{
+		String sql = "DELETE FROM books WHERE id = ?";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, bookId);
+		pstm.execute();
+		pstm.close();
+		dbConnection.closeConnection(con);
 	}
 }
