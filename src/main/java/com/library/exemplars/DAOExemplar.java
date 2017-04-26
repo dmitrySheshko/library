@@ -8,7 +8,7 @@ import java.util.List;
 import com.library.db.DBConnection;
 
 public class DAOExemplar {
-	DBConnection dbConnection = DBConnection.getInstance();
+	private DBConnection dbConnection = DBConnection.getInstance();
 	
 	public void saveExemplars(List<String> exemplars, int bookId) throws SQLException{
 		String sql = "INSERT INTO exemplars (number, book_id) values (?, ?)";

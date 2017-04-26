@@ -12,7 +12,7 @@ import com.mysql.jdbc.Statement;
 
 public class DAOBook {
 
-	DBConnection dbConnection = DBConnection.getInstance();
+	private DBConnection dbConnection = DBConnection.getInstance();
 
 	public ArrayList<Book> findAll() throws SQLException {
 		ArrayList<Book> books = new ArrayList<Book>();

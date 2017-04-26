@@ -10,7 +10,7 @@ import com.library.db.DBConnection;
 
 public class DAOCategory {
 	
-	DBConnection dbConnection = DBConnection.getInstance();
+	private DBConnection dbConnection = DBConnection.getInstance();
 	
 	public void find(){
 		

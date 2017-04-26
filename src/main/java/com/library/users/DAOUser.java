@@ -10,7 +10,7 @@ import com.library.db.DBConnection;
 import com.mysql.jdbc.Statement;
 
 public class DAOUser {
-	DBConnection dbConnection = DBConnection.getInstance();
+	private DBConnection dbConnection = DBConnection.getInstance();
 
 	// find an user by id
 	public User find(int id) throws SQLException {
