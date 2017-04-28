@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.sql.Timestamp;
 
 import com.library.books.Book;
 import com.library.db.DBConnection;
@@ -101,5 +103,34 @@ public class DAOOrder {
 		pstm.close();
 		dbConnection.closeConnection(con);
 		return result;
+	}
+	
+	public void issueBook(int orderId, int librarianId, int orderType) throws SQLException{
+		String sql = "UPDATE orders SET librarian_id = ?, order_type = ?, out_date = ? WHERE id = ?";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, librarianId);
+		pstm.setInt(2, orderType);
+		pstm.setTimestamp(3, getTimestamp());
+		pstm.setInt(4, orderId);
+		int result = pstm.executeUpdate();
+		pstm.close();
+		dbConnection.closeConnection(con);
+	}
+	
+	public void returnBook(int orderId) throws SQLException{
+		String sql = "UPDATE orders SET status = 0, return_date = ? WHERE id = ?";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setTimestamp(1, getTimestamp());
+		pstm.setInt(2, orderId);
+		int result = pstm.executeUpdate();
+		pstm.close();
+		dbConnection.closeConnection(con);
+	}
+	
+	private Timestamp getTimestamp(){
+		Date today = new Date();
+		return new Timestamp(today.getTime());
 	}
 }

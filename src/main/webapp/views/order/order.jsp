@@ -51,11 +51,12 @@
 					<td></td>
 					<td>
 						<c:if test="${order.status == 1 && order.orderType == 1}">
-							<a href="javascript:void(0);" class="btn btn-success">Issue the book</a>
-							<a href="javascript:void(0);" class="btn btn-warning">Close order</a>
+							<a href="/order-handler?id=${order.id}&type=issue&orderType=2" class="btn btn-success">Issue the book to home</a>
+							<a href="/order-handler?id=${order.id}&type=issue&orderType=3" class="btn btn-success">Issue the book to the reading room</a>
+							<a href="/order-handler?id=${order.id}&type=close" class="btn btn-warning">Close order</a>
 						</c:if>
 						<c:if test="${order.status == 1 && order.orderType != 1}">
-							<a href="javascript:void(0);" class="btn btn-primary">Return book</a>
+							<a href="/order-handler?id=${order.id}&type=return" class="btn btn-primary">Return book</a>
 						</c:if>
 					</td>
 				</tr>

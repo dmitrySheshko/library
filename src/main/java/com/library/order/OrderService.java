@@ -37,12 +37,6 @@ public class OrderService {
 	}
 	
 	public String[] getBookIds(HttpServletRequest request){
-		/*String[] bookIds = request.getParameterValues("bookIds");
-		int[] ids = new int[bookIds.length];
-		for(int i = 0; i < bookIds.length; i++){
-			ids[i] = Integer.parseInt(bookIds[i]);
-		}
-		return ids;*/
 		return request.getParameterValues("bookIds");
 	}
 	
@@ -69,5 +63,35 @@ public class OrderService {
 
 	private int getOrderIdFromPath(String urlPath){
 		return Integer.parseInt(urlPath.substring(1));
+	}
+	
+	public void orderHandler(HttpServletRequest request){
+		User librarian = getUserFromSession(request);
+		String requestType = (String)request.getParameter("type");
+		int orderType = 0;
+		String reqOrderType = request.getParameter("orderType");
+		if(reqOrderType != null){
+			orderType = Integer.parseInt(request.getParameter("orderType"));
+		}
+		int orderId = Integer.parseInt(request.getParameter("id"));
+		if(requestType.equals("issue")){
+			try {
+				daoOrder.issueBook(orderId, librarian.getId(), orderType);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(requestType.equals("return")){
+			try {
+				daoOrder.returnBook(orderId);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(requestType.equals("close")){
+			
+		}
 	}
 }
