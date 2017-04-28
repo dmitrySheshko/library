@@ -21,6 +21,12 @@ public class User {
         this.lastName = request.getParameter("lastName");
         this.setRole(request.getParameter("role"));
 	}
+	
+	public User(int id, String firstName, String lastName){
+		this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+	}
 
 	public void setId(int id) {
 		this.id = id;

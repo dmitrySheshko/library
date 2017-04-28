@@ -26,6 +26,12 @@ public class Book {
     		this.exemplars = Arrays.asList(exemplars);
     	}
     }
+    
+    public Book(int id, String title, String author){
+    	this.id = id;
+    	this.title = title;
+    	this.author = author;
+    }
 
     public void setId(int id){
         this.id = id;

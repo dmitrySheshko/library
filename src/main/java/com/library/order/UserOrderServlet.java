@@ -14,15 +14,19 @@ import com.library.books.Book;
 import com.library.books.BookService;
 import com.library.errors.ValidationError;
 
-@WebServlet("/order")
-public class OrderServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/order", "/order/*"})
+public class UserOrderServlet extends HttpServlet {
 
 	OrderService orderService = new OrderService();
 	BookService bookService = new BookService();
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		Order order = orderService.getOrder(request.getPathInfo());
+		if(order != null){
+			request.getSession().setAttribute("order", order);
+			request.getRequestDispatcher("/views/order/order.jsp").forward(request, response);
+		}
 	}
 
 	@Override
@@ -32,12 +36,11 @@ public class OrderServlet extends HttpServlet {
 			if(error != null){
 				ArrayList<Book> books = bookService.getBooks();
 				request.setAttribute("books", books);
-				request.setAttribute("orderError", error);
-				request.getRequestDispatcher("/views/books/books.jsp").forward(request, response);
+				request.getSession().setAttribute("orderError", error);
+				request.getRequestDispatcher("/views/order/order-error.jsp").forward(request, response);
 				return;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		response.sendRedirect("/office");

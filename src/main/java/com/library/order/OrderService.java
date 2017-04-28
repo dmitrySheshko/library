@@ -1,6 +1,7 @@
 package com.library.order;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,5 +45,29 @@ public class OrderService {
 		return ids;*/
 		return request.getParameterValues("bookIds");
 	}
+	
+	public ArrayList<Order> getOrders(){
+		try {
+			return daoOrder.findAll();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Order getOrder(String urlPath){
+		int orderId = getOrderIdFromPath(urlPath);
+		try {
+			return daoOrder.find(orderId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 
+	private int getOrderIdFromPath(String urlPath){
+		return Integer.parseInt(urlPath.substring(1));
+	}
 }

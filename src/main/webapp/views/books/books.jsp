@@ -8,16 +8,10 @@
 		<%@ include file="/views/menu/main-menu.jsp"%>
 		<div class="page">
 			<h1>Books</h1>
-			<%@ include file="/views/books/filter/filter.jsp"%>
+			<%@ include file="/views/books/filter.jsp"%>
 
 			<c:if test="${sessionUser != null && sessionUser.role != 3}">
 				<a href="/add-book">Add book</a>
-			</c:if>
-			
-			<c:if test="${orderError != null}">
-				<div class="alert alert-danger" role="alert">
-					<div>${ orderError.message }</div>
-				</div>
 			</c:if>
 
 			<form action="/order" method="post">
