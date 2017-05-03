@@ -90,7 +90,7 @@ public class OrderService {
 				e.printStackTrace();
 			}
 		}
-		if(requestType.equals("close")){
+		if(requestType.equals("cancel")){
 			
 		}
 	}

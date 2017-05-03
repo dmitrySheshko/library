@@ -13,10 +13,31 @@ import com.mysql.jdbc.Statement;
 public class DAOBook {
 
 	private DBConnection dbConnection = DBConnection.getInstance();
+	
+	public Book find(int bookId) throws SQLException{
+		Book book = null;
+		String sql = "SELECT * FROM books WHERE id = ?";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, bookId);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			// TODO: like this or by constructor?
+			book = new Book();
+			book.setId(rs.getInt("id"));
+			book.setTitle(rs.getString("title"));
+			book.setAuthor(rs.getString("author"));
+			book.setCategory(new Category(rs.getInt("category"), ""));
+		}
+		rs.close();
+		pstm.close();
+		dbConnection.closeConnection(con);
+		return book;
+	}
 
 	public ArrayList<Book> findAll() throws SQLException {
 		ArrayList<Book> books = new ArrayList<Book>();
-		String sql = "SELECT b.*, c.id as categoryId, c.name, (SELECT COUNT(*) FROM exemplars e WHERE e.book_id = b.id AND e.status = 1) AS count FROM books b LEFT JOIN categories c ON b.category = c.id";
+		String sql = "SELECT b.*, c.id as categoryId, c.name, (SELECT COUNT(*) FROM exemplars e WHERE e.book_id = b.id AND e.status = 1) AS count FROM books b LEFT JOIN categories c ON b.category = c.id ORDER BY b.create_date DESC";
 		Connection con = dbConnection.getConnection();
 		PreparedStatement pstm = con.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
@@ -62,6 +83,17 @@ public class DAOBook {
 		Connection con = dbConnection.getConnection();
 		PreparedStatement pstm = con.prepareStatement(sql);
 		pstm.setInt(1, bookId);
+		pstm.execute();
+		pstm.close();
+		dbConnection.closeConnection(con);
+	}
+	
+	public void update(Book book) throws SQLException{
+		String sql = "UPDATE books SET category = ? WHERE id = ?";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, book.getCategory().getId());
+		pstm.setInt(2, book.getId());
 		pstm.execute();
 		pstm.close();
 		dbConnection.closeConnection(con);

@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.library.category.Category;
 import com.library.errors.ValidationError;
 import com.library.exemplars.DAOExemplar;
@@ -86,5 +88,76 @@ public class BookService {
 			error.add(new ValidationError("undefined", "Ups, something wrong!"));
 		}
 		return error;
+	}
+	
+	public Book find(String urlPath){
+		int bookId = getBookIdFromPath(urlPath);
+		Book book = null;
+		try {
+			book = daoBook.find(bookId);
+			book.setExemplars(getBookExemplars(bookId));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return book;
+	}
+	
+	private List<String> getBookExemplars(int bookId) throws SQLException{
+		return daoExemplar.findByBookId(bookId);
+	}
+	
+	private int getBookIdFromPath(String urlPath){
+		return Integer.parseInt(urlPath.substring(1));
+	}
+	
+	public void editBook(HttpServletRequest request){
+		Book newBook = new Book(request);
+		Book oldBook = find(request.getPathInfo());
+		int bookId = getBookIdFromPath(request.getPathInfo());
+		newBook.setId(bookId);
+		
+		List<String> newExemplars = findNewBookExemplars(newBook.getExemplars(), oldBook.getExemplars());
+		if(newExemplars.size() != 0) {
+			try {
+				daoExemplar.saveExemplars(newExemplars, bookId);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		List<String> deletedExemplars = findDeletedBookExemplars(newBook.getExemplars(), oldBook.getExemplars());
+		if(deletedExemplars.size() != 0) {
+			
+		}
+		//save new exemplars
+		//chack deleted
+		//delete old exemplars
+		
+		try {
+			daoBook.update(newBook);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private List<String> findNewBookExemplars(List<String> newBookExemplars, List<String> oldBookExemplars){
+		List<String> newExemplars = new ArrayList<String>();
+		for(String exemplar : newBookExemplars){
+			if(!oldBookExemplars.contains(exemplar)){
+				newExemplars.add(exemplar);
+			}
+		}
+		return newExemplars;
+	}
+	
+	private List<String> findDeletedBookExemplars(List<String> newBookExemplars, List<String> oldBookExemplars){
+		List<String> deletedExemplars = new ArrayList<String>();
+		for(String exemplar : oldBookExemplars){
+			if(!oldBookExemplars.contains(exemplar)){
+				deletedExemplars.add(exemplar);
+			}
+		}
+		return deletedExemplars;
 	}
 }
