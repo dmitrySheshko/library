@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.sql.Timestamp;
 
 import com.library.books.Book;
@@ -113,7 +114,7 @@ public class DAOOrder {
 		pstm.setInt(2, orderType);
 		pstm.setTimestamp(3, getTimestamp());
 		pstm.setInt(4, orderId);
-		int result = pstm.executeUpdate();
+		pstm.executeUpdate();//int result = 
 		pstm.close();
 		dbConnection.closeConnection(con);
 	}
@@ -124,7 +125,7 @@ public class DAOOrder {
 		PreparedStatement pstm = con.prepareStatement(sql);
 		pstm.setTimestamp(1, getTimestamp());
 		pstm.setInt(2, orderId);
-		int result = pstm.executeUpdate();
+		pstm.executeUpdate();//int result = 
 		pstm.close();
 		dbConnection.closeConnection(con);
 	}
@@ -132,5 +133,33 @@ public class DAOOrder {
 	private Timestamp getTimestamp(){
 		Date today = new Date();
 		return new Timestamp(today.getTime());
+	}
+	
+	public List<Order> findActiveOrdersByBookId(int bookId) throws SQLException{
+		List<Order> orders = new ArrayList<Order>();
+		String sql = "SELECT * FROM orders WHERE book_id = ? AND status = 1 AND order_type != 1";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, bookId);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()){
+			Order order = new Order();
+			order.setId(rs.getInt("id"));
+			orders.add(order);
+		}
+		rs.close();
+		pstm.close();
+		dbConnection.closeConnection(con);
+		return orders;
+	}
+	
+	public void deleteAllByBookId(int bookId) throws SQLException{
+		String sql = "DELETE FROM orders WHERE book_id = ?";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, bookId);
+		pstm.execute();
+		pstm.close();
+		dbConnection.closeConnection(con);
 	}
 }

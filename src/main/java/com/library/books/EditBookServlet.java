@@ -1,8 +1,6 @@
 package com.library.books;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,46 +8,35 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.library.category.Category;
-import com.library.category.DAOCategory;
-
 @WebServlet("/book/*")
 public class EditBookServlet extends HttpServlet {
-	private DAOCategory daoCategory = new DAOCategory();
+	
 	private BookService bookService = new BookService();
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Book book = bookService.find(request.getPathInfo());
-		ArrayList<Category> categories = null;
-		try {
-			categories = daoCategory.findAll();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Book book = bookService.find(request.getPathInfo());		
 		request.setAttribute("book", book);
-		request.setAttribute("categories", categories);
+		request.setAttribute("categories", bookService.getCategories());
 		response.setContentType("text/html");
         request.getRequestDispatcher("/views/books/edit-book.jsp").forward(request, response);
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		bookService.editBook(request);
-		response.sendRedirect("/books");
-		
-		/*Book book = bookService.find(request.getPathInfo());
-		ArrayList<Category> categories = null;
-		try {
-			categories = daoCategory.findAll();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Book newBook = new Book(request);
+		Error error = bookService.editBook(request, newBook);
+
+		if(error != null) {
+			request.setAttribute("error", error);
 		}
-		request.setAttribute("book", book);
-		request.setAttribute("categories", categories);
+		else {
+			request.setAttribute("message", "The book was edited!");
+		}
+		
+		request.setAttribute("book", newBook);
+		request.setAttribute("categories", bookService.getCategories());
 		response.setContentType("text/html");
-        request.getRequestDispatcher("/views/books/edit-book.jsp").forward(request, response);*/
+        request.getRequestDispatcher("/views/books/edit-book.jsp").forward(request, response);
 	}
 }

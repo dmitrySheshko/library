@@ -9,11 +9,16 @@
 		<%@ include file="/views/menu/main-menu.jsp"%>
 		<div class="page add-book">
 			<h1>Edit book</h1>
-<%-- 			<c:if test="${message != null}"> --%>
-<!-- 				<div class="alert alert-success" role="alert"> -->
-<%-- 					<div>${message}</div> --%>
-<!-- 				</div> -->
-<%-- 			</c:if> --%>
+			<c:if test="${error != null}">
+				<div class="alert alert-danger" role="alert">
+					<div>${error.message}</div>
+				</div>
+			</c:if>
+			<c:if test="${message != null}">
+				<div class="alert alert-success" role="alert">
+					<div>${message}</div>
+				</div>
+			</c:if>
 			<form action="/book/${book.id}" method="post" class="form-horizontal">
 				<table class="table table-striped table-hover">
 					<tr>
@@ -90,13 +95,6 @@
 					</tr>
 				</table>
 			</form>
-			<c:if test="${errors != null && errors.size() != 0}">
-				<div class="alert alert-danger" role="alert">
-					<c:forEach items="${errors}" var="error">
-						<div>${ error.message }</div>
-					</c:forEach>
-				</div>
-			</c:if>
 		</div>
 	</div>
 	<script>

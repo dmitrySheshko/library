@@ -22,6 +22,29 @@ public class DAOExemplar {
 		while (rs.next()){
 			exemplars.add(rs.getString("number"));
 		}
+		rs.close();
+		pstm.close();
+		dbConnection.closeConnection(con);
+		return exemplars;
+	}
+	
+	/*public void findByNumber(String number){
+		
+	}*/
+	
+	public List<Exemplar> findAllByNumbers(List<String> numbers) throws SQLException{
+		String numb = String.join(",", numbers);
+		List<Exemplar> exemplars = new ArrayList<Exemplar>();
+		String sql = "SELECT * FROM exemplars WHERE number IN (" + numb + ")";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()){
+			exemplars.add(new Exemplar(rs.getInt("id"), rs.getString("number"), rs.getInt("book_id")));
+		}
+		rs.close();
+		pstm.close();
+		dbConnection.closeConnection(con);
 		return exemplars;
 	}
 	
@@ -35,6 +58,26 @@ public class DAOExemplar {
 			pstm.addBatch();
 		}
 		pstm.executeBatch();//int[]
+		pstm.close();
+		dbConnection.closeConnection(con);
+	}
+	
+	public void deleteAllByBookId(int bookId) throws SQLException{
+		String sql = "DELETE FROM exemplars WHERE book_id = ?";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, bookId);
+		pstm.execute();
+		pstm.close();
+		dbConnection.closeConnection(con);
+	}
+	
+	public void deleteByNumbers(List<String> numbers) throws SQLException{
+		String numb = String.join(",", numbers);
+		String sql = "DELETE FROM exemplars WHERE number IN (" + numb + ")";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.execute();
 		pstm.close();
 		dbConnection.closeConnection(con);
 	}
