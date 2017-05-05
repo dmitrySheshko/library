@@ -162,4 +162,14 @@ public class DAOOrder {
 		pstm.close();
 		dbConnection.closeConnection(con);
 	}
+	
+	public void changeStatus(int orderId) throws SQLException{
+		String sql = "UPDATE orders SET status = 0 WHERE id = ?";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, orderId);
+		pstm.executeUpdate();
+		pstm.close();
+		dbConnection.closeConnection(con);
+	}
 }

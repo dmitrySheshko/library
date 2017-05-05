@@ -11,7 +11,9 @@
 			<%@ include file="/views/books/filter.jsp"%>
 
 			<c:if test="${sessionUser != null && sessionUser.role != 3}">
-				<a href="/add-book">Add book</a>
+				<div class="form-group">
+					<a href="/add-book" class="btn btn-success">Add book</a>
+				</div>
 			</c:if>
 
 			<form action="/order" method="post">
@@ -25,7 +27,10 @@
 					</tr>
 					<c:forEach items="${books}" var="book">
 						<tr>
-							<td><input type="checkbox" name="bookIds" value="${book.id}" />
+							<td>
+								<c:if test="${sessionUser != null && sessionUser.role == 3 && (book.count - book.issueCount - book.waitCount) != 0}">
+									<input type="checkbox" name="bookIds" value="${book.id}" />
+								</c:if>
 							</td>
 							<td>
 								<c:if test="${sessionUser == null || (sessionUser != null && sessionUser.role == 3)}">
@@ -39,19 +44,19 @@
 							<td>${book.author}</td>
 							<td>${book.category.name}</td>
 							<td>
-								<c:if test="${book.count == 0}">
-									not available!
+								<c:if test="${sessionUser == null || sessionUser.role == 3}">
+									<c:if test="${(book.count - book.issueCount - book.waitCount) == 0}">
+										<span class="label label-warning">not available!</span>
+									</c:if>
+									<c:if test="${(book.count - book.issueCount - book.waitCount) != 0}">
+										<span class="label label-success">available!</span>
+									</c:if>
 								</c:if>
-								<c:if test="${book.count != 0}">
-									<c:if test="${sessionUser != null && sessionUser.role == 3}">
-										${book.count}
-									</c:if>
-									<c:if test="${sessionUser != null && sessionUser.role != 3}">
-										${book.count}
-									</c:if>
-									<c:if test="${sessionUser == null}">
-										available
-									</c:if>
+								<c:if test="${sessionUser != null && sessionUser.role != 3}">
+									<div>Total count: ${book.count}</div>
+									<div>Issue count: ${book.issueCount}</div>
+									<div>Wait count: ${book.waitCount}</div>
+									<div>Available count: ${book.count - book.issueCount - book.waitCount}</div>
 								</c:if>
 							</td>
 						</tr>

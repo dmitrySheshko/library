@@ -20,8 +20,27 @@ public class BookService {
 	private DAOOrder daoOrder = new DAOOrder();
 	private DAOCategory daoCategory = new DAOCategory();
 	
-	public ArrayList<Book> getBooks() throws SQLException{
-		return daoBook.findAll();
+	public List<Book> getBooks(HttpServletRequest request) {
+		List<Book> books = new ArrayList<Book>();
+		BookFilter bookFilter = new BookFilter(request);
+		//if is set filter params
+		if(isSetFilterParams(bookFilter)){
+			try {
+				books = daoBook.findAll(getWhereString(bookFilter));
+				request.setAttribute("filter", bookFilter);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			try {
+				books = daoBook.findAll();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return books;
 	}
 	
 	public ArrayList<ValidationError> bookValidation(Book book){
@@ -45,6 +64,11 @@ public class BookService {
         ValidationError exemplarsError = checkExemplars(book.getExemplars());
         if(exemplarsError != null){
             errors.add(exemplarsError);
+        }
+        //check exemplars
+        Error error = checkExemplarsNumbers(book.getExemplars());
+        if(error != null){
+        	errors.add(new ValidationError("exemplars", error.getMessage()));
         }
 		return errors;
 	}
@@ -182,22 +206,28 @@ public class BookService {
 	
 	private Error editBookSaveNewExemplars(Book newBook, Book oldBook){
 		List<String> newExemplars = findNewBookExemplars(newBook.getExemplars(), oldBook.getExemplars());
-		Error error = null;
-		try {
-			List<Exemplar> checkNewExemplars = daoExemplar.findAllByNumbers(newExemplars);
-			if(checkNewExemplars.size() != 0) {
-				error = new Error("Exemplar number is used!");
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
 		
+		Error error = checkExemplarsNumbers(newExemplars);
+
 		if(newExemplars.size() != 0 && error == null) {
 			try {
 				daoExemplar.saveExemplars(newExemplars, newBook.getId());
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
+		return error;
+	}
+	
+	private Error checkExemplarsNumbers(List<String> newExemplars){
+		Error error = null;
+		try {
+			List<Exemplar> checkNewExemplars = daoExemplar.findAllByNumbers(newExemplars);
+			if(checkNewExemplars.size() != 0) {
+				error = new Error("One or more exemplar numbers are already present in the system!");
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
 		}
 		return error;
 	}
@@ -258,5 +288,31 @@ public class BookService {
 			return new Error("Opps, something was wrong! Delete book");
 		}
 		return null;
+	}
+	
+	private Boolean isSetFilterParams(BookFilter bookFilter){
+		return checkFilterParam(bookFilter.getTitle()) || checkFilterParam(bookFilter.getAuthor()) || checkFilterParam(bookFilter.getCategory());
+	}
+	
+	private Boolean checkFilterParam(String param){
+		return param != null && param.trim().length() != 0;
+	}
+	
+	private Boolean checkFilterParam(int param){
+		return param != 0;
+	}
+	
+	private String getWhereString(BookFilter bookFilter){
+		List<String> temp = new ArrayList<String>();
+		if(checkFilterParam(bookFilter.getTitle())){
+			temp.add("b.title LIKE '%" + bookFilter.getTitle() + "%'");
+		}
+		if(checkFilterParam(bookFilter.getAuthor())){
+			temp.add("b.author LIKE '%" + bookFilter.getAuthor() + "%'");
+		}
+		if(checkFilterParam(bookFilter.getCategory())){
+			temp.add("b.category = " + bookFilter.getCategory());
+		}
+		return String.join(" AND ", temp);
 	}
 }

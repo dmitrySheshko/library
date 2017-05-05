@@ -14,6 +14,8 @@ public class Book {
     private List<String> exemplars;
     private Category category;
     private int count; 
+    private int issueCount;
+    private int waitCount;
     
     public Book(){}
     
@@ -79,5 +81,21 @@ public class Book {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public int getIssueCount() {
+		return issueCount;
+	}
+
+	public void setIssueCount(int issueCount) {
+		this.issueCount = issueCount;
+	}
+
+	public int getWaitCount() {
+		return waitCount;
+	}
+
+	public void setWaitCount(int waitCount) {
+		this.waitCount = waitCount;
 	}
 }

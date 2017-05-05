@@ -18,7 +18,7 @@ public class OrderService {
 		if(reader == null){
 			return new ValidationError("user", "Sign in, please!");
 		}
-		if(bookIds.length == 0){
+		if(bookIds == null || bookIds.length == 0){
 			return new ValidationError("books", "Choose one or more books, please!");
 		}
 		if(checkForSameBooks(reader.getId(), bookIds)){
@@ -78,7 +78,6 @@ public class OrderService {
 			try {
 				daoOrder.issueBook(orderId, librarian.getId(), orderType);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -86,12 +85,15 @@ public class OrderService {
 			try {
 				daoOrder.returnBook(orderId);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		if(requestType.equals("cancel")){
-			
+			try {
+				daoOrder.changeStatus(orderId);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
