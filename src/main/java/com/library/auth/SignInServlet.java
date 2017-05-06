@@ -44,6 +44,7 @@ public class SignInServlet extends HttpServlet {
 				doGet(request, response);
 			}
 			if(user != null){
+				user.setPassword(null);
                 request.getSession().setAttribute("sessionUser", user);
                 switch (user.getRole()){
                 case 1://ADMIN

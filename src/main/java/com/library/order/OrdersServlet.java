@@ -1,7 +1,7 @@
 package com.library.order;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +14,7 @@ public class OrdersServlet extends HttpServlet {
 	OrderService orderService = new OrderService();
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ArrayList<Order> orders = orderService.getOrders();
+		List<Order> orders = orderService.getOrders();
 		if(orders != null){
 			request.setAttribute("orders", orders);
 		}

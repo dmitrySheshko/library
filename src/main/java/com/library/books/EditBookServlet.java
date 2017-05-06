@@ -15,7 +15,7 @@ public class EditBookServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Book book = bookService.find(request.getPathInfo());		
+		Book book = bookService.find(request.getPathInfo());	
 		request.setAttribute("book", book);
 		request.setAttribute("categories", bookService.getCategories());
 		response.setContentType("text/html");
@@ -24,17 +24,7 @@ public class EditBookServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Book newBook = new Book(request);
-		Error error = bookService.editBook(request, newBook);
-
-		if(error != null) {
-			request.setAttribute("error", error);
-		}
-		else {
-			request.setAttribute("message", "The book was edited!");
-		}
-		
-		request.setAttribute("book", newBook);
+		bookService.editBook(request);
 		request.setAttribute("categories", bookService.getCategories());
 		response.setContentType("text/html");
         request.getRequestDispatcher("/views/books/edit-book.jsp").forward(request, response);

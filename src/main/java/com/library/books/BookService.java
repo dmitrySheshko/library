@@ -140,23 +140,33 @@ public class BookService {
 		return Integer.parseInt(urlPath.substring(1));
 	}
 	
-	public Error editBook(HttpServletRequest request, Book newBook){
+	public void editBook(HttpServletRequest request){
 		Error error = null;
 		Book oldBook = find(request.getPathInfo());
-		int bookId = getBookIdFromPath(request.getPathInfo());
-		newBook.setId(bookId);
+		Book newBook = new Book(request);
+		if(oldBook == null){
+			error = new Error("The book wasn't found!");
+			request.setAttribute("error", error);
+			request.setAttribute("book", newBook);
+			return;
+		}
+		newBook.setId(oldBook.getId());
 		newBook.setAuthor(oldBook.getAuthor());
 		newBook.setTitle(oldBook.getTitle());
 		//find and delete old exemplars if this ones don't used!
 		error = editBookDeleteOldExemplars(newBook, oldBook);
 		if(error != null) {
 			newBook.setExemplars(oldBook.getExemplars());
-			return error;
+			request.setAttribute("error", error);
+			request.setAttribute("book", newBook);
+			return;
 		}
 		//save new book's exemplars
 		error = editBookSaveNewExemplars(newBook, oldBook);
 		if(error != null) {
-			return error;
+			request.setAttribute("error", error);
+			request.setAttribute("book", newBook);
+			return;
 		}
 		//save a book
 		try {
@@ -164,7 +174,8 @@ public class BookService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return error;
+		request.setAttribute("book", newBook);
+		request.setAttribute("message", "The book was edited!");
 	}
 	
 	private List<String> findNewBookExemplars(List<String> newBookExemplars, List<String> oldBookExemplars){
@@ -206,9 +217,10 @@ public class BookService {
 	
 	private Error editBookSaveNewExemplars(Book newBook, Book oldBook){
 		List<String> newExemplars = findNewBookExemplars(newBook.getExemplars(), oldBook.getExemplars());
-		
-		Error error = checkExemplarsNumbers(newExemplars);
-
+		Error error = null;
+		if(newBook.getExemplars() != null && newBook.getExemplars().size() != 0) {
+			error = checkExemplarsNumbers(newExemplars);
+		}
 		if(newExemplars.size() != 0 && error == null) {
 			try {
 				daoExemplar.saveExemplars(newExemplars, newBook.getId());
@@ -237,8 +249,11 @@ public class BookService {
 		Error error = null;
 		int bookActiveOrders = getBookActiveOrders(newBook.getId());
 		if(deletedExemplars.size() != 0) {
-			int bookNewCount = oldBook.getExemplars().size() - deletedExemplars.size();
-			if(bookNewCount > 0 || bookNewCount > bookActiveOrders) {
+			int oldExemplarsCount = 0;
+			if(oldBook.getExemplars() != null) {
+				oldExemplarsCount = oldBook.getExemplars().size();
+			}
+			if((oldExemplarsCount - deletedExemplars.size() - bookActiveOrders) >= 0) {
 				try {
 					daoExemplar.deleteByNumbers(deletedExemplars);
 				} catch (SQLException e) {
@@ -303,7 +318,7 @@ public class BookService {
 	}
 	
 	private String getWhereString(BookFilter bookFilter){
-		List<String> temp = new ArrayList<String>();
+		List<String> temp = new ArrayList<String>(); //[]
 		if(checkFilterParam(bookFilter.getTitle())){
 			temp.add("b.title LIKE '%" + bookFilter.getTitle() + "%'");
 		}

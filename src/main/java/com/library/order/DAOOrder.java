@@ -59,8 +59,8 @@ public class DAOOrder {
 		return order;
 	}
 	
-	public ArrayList<Order> findAll() throws SQLException {
-		ArrayList<Order> orders = new ArrayList<Order>();
+	public List<Order> findAll() throws SQLException {
+		List<Order> orders = new ArrayList<Order>();
 		String sql = "SELECT o.id, o.create_date, o.status, reader.firstName, reader.lastName, b.title, b.author FROM orders o LEFT JOIN users reader ON o.reader_id = reader.id LEFT JOIN books b ON b.id = o.book_id ORDER BY o.create_date DESC";
 		Connection con = dbConnection.getConnection();
 		PreparedStatement pstm = con.prepareStatement(sql);
@@ -76,6 +76,32 @@ public class DAOOrder {
 			reader.setFirstName(rs.getString("firstName"));
 			reader.setLastName(rs.getString("lastName"));
 			order.setReader(reader);
+			//book data
+			Book book = new Book();
+			book.setTitle(rs.getString("title"));
+			book.setAuthor(rs.getString("author"));
+			order.setBook(book);
+			orders.add(order);
+		}
+		rs.close();
+		pstm.close();
+		dbConnection.closeConnection(con);
+		return orders;
+	}
+	
+	public List<Order> findOrdersByUser(int readerId) throws SQLException{
+		List<Order> orders = new ArrayList<Order>();
+		String sql = "SELECT o.id, o.create_date, o.order_type, b.title, b.author FROM orders o LEFT JOIN books b ON b.id = o.book_id WHERE o.reader_id = ? AND o.status = 1 ORDER BY o.create_date DESC";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, readerId);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()){
+			Order order = new Order();
+			//order data
+			order.setId(rs.getInt("id"));
+			order.setOrderType(rs.getInt("order_type"));
+			order.setCreateDate(rs.getDate("create_date"));
 			//book data
 			Book book = new Book();
 			book.setTitle(rs.getString("title"));
@@ -151,6 +177,16 @@ public class DAOOrder {
 		pstm.close();
 		dbConnection.closeConnection(con);
 		return orders;
+	}
+	
+	public void delete(int orderId) throws SQLException {
+		String sql = "DELETE FROM orders WHERE id = ?";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		pstm.setInt(1, orderId);
+		pstm.execute();
+		pstm.close();
+		dbConnection.closeConnection(con);
 	}
 	
 	public void deleteAllByBookId(int bookId) throws SQLException{

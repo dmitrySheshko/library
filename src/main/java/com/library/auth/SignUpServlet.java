@@ -37,6 +37,7 @@ public class SignUpServlet extends HttpServlet {
 					User admin = (User)request.getSession().getAttribute("sessionUser");//is ADMIN
 	                if(admin == null){
 	                    user.setId(newUserId);
+	                    user.setPassword(null);
 	                	request.getSession().setAttribute("sessionUser", user);
 	                }
 				}

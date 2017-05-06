@@ -37,3 +37,12 @@
 	width: 200px;
 	margin: 0 20px 20px 0;
 }
+.profile {
+	overflow: hidden;
+}
+.office-menu {
+	margin-right: 20px;
+}
+.office-menu li {
+	float: none;
+}

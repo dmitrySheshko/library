@@ -37,7 +37,7 @@ public class DAOBook {
 
 	public ArrayList<Book> findAll() throws SQLException {
 		ArrayList<Book> books = new ArrayList<Book>();
-		String sql = "SELECT b.*, c.id as categoryId, c.name, (SELECT COUNT(*) FROM exemplars e WHERE e.book_id = b.id) AS count, (SELECT COUNT(*) FROM orders o WHERE o.book_id = b.id AND order_type != 1) AS issue_count, (SELECT COUNT(*) FROM orders o WHERE o.book_id = b.id AND order_type = 1) AS wait_count FROM books b LEFT JOIN categories c ON b.category = c.id ORDER BY b.create_date DESC";
+		String sql = "SELECT b.*, c.id as categoryId, c.name, (SELECT COUNT(*) FROM exemplars e WHERE e.book_id = b.id) AS count, (SELECT COUNT(*) FROM orders o WHERE o.book_id = b.id AND o.order_type != 1 AND o.status = 1) AS issue_count, (SELECT COUNT(*) FROM orders o WHERE o.book_id = b.id AND o.order_type = 1 AND o.status = 1) AS wait_count FROM books b LEFT JOIN categories c ON b.category = c.id ORDER BY b.create_date DESC";
 		Connection con = dbConnection.getConnection();
 		PreparedStatement pstm = con.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
@@ -61,7 +61,7 @@ public class DAOBook {
 
 	public ArrayList<Book> findAll(String whereString) throws SQLException {
 		ArrayList<Book> books = new ArrayList<Book>();
-		String sql = "SELECT b.*, c.id as categoryId, c.name, (SELECT COUNT(*) FROM exemplars e WHERE e.book_id = b.id) AS count, (SELECT COUNT(*) FROM orders o WHERE o.book_id = b.id AND order_type != 1) AS issue_count, (SELECT COUNT(*) FROM orders o WHERE o.book_id = b.id AND order_type = 1) AS wait_count FROM books b LEFT JOIN categories c ON b.category = c.id WHERE " + whereString + " ORDER BY b.create_date DESC";
+		String sql = "SELECT b.*, c.id as categoryId, c.name, (SELECT COUNT(*) FROM exemplars e WHERE e.book_id = b.id) AS count, (SELECT COUNT(*) FROM orders o WHERE o.book_id = b.id AND o.order_type != 1  AND o.status = 1) AS issue_count, (SELECT COUNT(*) FROM orders o WHERE o.book_id = b.id AND o.order_type = 1 AND o.status = 1) AS wait_count FROM books b LEFT JOIN categories c ON b.category = c.id WHERE " + whereString + " ORDER BY b.create_date DESC";
 		Connection con = dbConnection.getConnection();
 		PreparedStatement pstm = con.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();

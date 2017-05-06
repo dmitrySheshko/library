@@ -1,7 +1,7 @@
 package com.library.order;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,7 +40,7 @@ public class OrderService {
 		return request.getParameterValues("bookIds");
 	}
 	
-	public ArrayList<Order> getOrders(){
+	public List<Order> getOrders(){
 		try {
 			return daoOrder.findAll();
 		} catch (SQLException e) {
@@ -91,6 +91,13 @@ public class OrderService {
 		if(requestType.equals("cancel")){
 			try {
 				daoOrder.changeStatus(orderId);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if(requestType.equals("deleteByUser")) {
+			try {
+				daoOrder.delete(orderId);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

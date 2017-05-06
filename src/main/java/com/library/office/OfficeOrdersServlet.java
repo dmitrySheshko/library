@@ -8,13 +8,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/office")
-public class OfficeServlet extends HttpServlet {
+@WebServlet("/office/orders")
+public class OfficeOrdersServlet extends HttpServlet {
 	private OfficeService officeService = new OfficeService();
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		officeService.getUser(request);
-		response.setContentType("text/html");
-        request.getRequestDispatcher("/views/office/office.jsp").forward(request, response);
+		officeService.getUserActiveOrders(request);
+        request.getRequestDispatcher("/views/office/office-orders.jsp").forward(request, response);
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 	}
 }

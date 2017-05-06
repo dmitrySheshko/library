@@ -1,6 +1,6 @@
 package com.library.books;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +24,14 @@ public class Book {
     	this.author = request.getParameter("author");
     	this.category = new Category(Integer.parseInt(request.getParameter("category")), "");
     	String[] exemplars = request.getParameterValues("exemplarNumber");
-    	if(exemplars != null){
-    		this.exemplars = Arrays.asList(exemplars);
+    	
+    	if(exemplars != null && exemplars.length != 0){
+    		this.exemplars = new ArrayList<String>();
+    		for(String exemplar : exemplars) {
+    			if(exemplar.trim().length() != 0) {
+    				this.exemplars.add(exemplar);
+    			}
+    		}
     	}
     }
     

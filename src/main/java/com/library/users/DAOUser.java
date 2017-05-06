@@ -27,6 +27,7 @@ public class DAOUser {
 			user.setFirstName(rs.getString("firstName"));
 			user.setLastName(rs.getString("lastName"));
 			user.setRole(rs.getInt("role"));
+			user.setPassword(rs.getString("password"));
 		}
 		rs.close();
 		pstm.close();
@@ -50,6 +51,7 @@ public class DAOUser {
 			user.setFirstName(rs.getString("firstName"));
 			user.setLastName(rs.getString("lastName"));
 			user.setRole(rs.getInt("role"));
+			user.setPassword(rs.getString("password"));
 		}
 		rs.close();
 		pstm.close();
@@ -72,6 +74,7 @@ public class DAOUser {
 			user.setFirstName(rs.getString("firstName"));
 			user.setLastName(rs.getString("lastName"));
 			user.setRole(rs.getInt("role"));
+			user.setPassword(rs.getString("password"));
 		}
 		rs.close();
 		pstm.close();
