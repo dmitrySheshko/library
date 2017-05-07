@@ -89,6 +89,36 @@ public class DAOOrder {
 		return orders;
 	}
 	
+	public List<Order> findAll(String whereString) throws SQLException {
+		List<Order> orders = new ArrayList<Order>();
+		String sql = "SELECT o.id, o.create_date, o.status, reader.firstName, reader.lastName, b.title, b.author FROM orders o LEFT JOIN users reader ON o.reader_id = reader.id LEFT JOIN books b ON b.id = o.book_id WHERE " + whereString + " ORDER BY o.create_date DESC";
+		Connection con = dbConnection.getConnection();
+		PreparedStatement pstm = con.prepareStatement(sql);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()){
+			Order order = new Order();
+			//order data
+			order.setId(rs.getInt("id"));
+			order.setCreateDate(rs.getDate("create_date"));
+			order.setStatus(rs.getInt("status"));
+			//reader data
+			User reader = new User();
+			reader.setFirstName(rs.getString("firstName"));
+			reader.setLastName(rs.getString("lastName"));
+			order.setReader(reader);
+			//book data
+			Book book = new Book();
+			book.setTitle(rs.getString("title"));
+			book.setAuthor(rs.getString("author"));
+			order.setBook(book);
+			orders.add(order);
+		}
+		rs.close();
+		pstm.close();
+		dbConnection.closeConnection(con);
+		return orders;
+	}
+	
 	public List<Order> findOrdersByUser(int readerId) throws SQLException{
 		List<Order> orders = new ArrayList<Order>();
 		String sql = "SELECT o.id, o.create_date, o.order_type, b.title, b.author FROM orders o LEFT JOIN books b ON b.id = o.book_id WHERE o.reader_id = ? AND o.status = 1 ORDER BY o.create_date DESC";

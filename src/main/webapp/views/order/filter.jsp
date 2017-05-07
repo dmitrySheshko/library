@@ -3,7 +3,10 @@
 <div class="book-filter">
 	<form action="/orders" method="get" enctype="application/x-www-form-urlencoded">
 		<div class="form-group">
-			<input type="text" name="reader" placeholder="Reader full name" class="form-control" value="${filter.reader}" />
+			<input type="text" name="readerFirstName" placeholder="Reader first name" class="form-control" value="${filter.readerFirstName}" />
+		</div>
+		<div class="form-group">
+			<input type="text" name="readerLastName" placeholder="Reader last name" class="form-control" value="${filter.readerLastName}" />
 		</div>
 		<div class="form-group">
 			<input type="text" name="title" placeholder="Book title" class="form-control" value="${filter.title}" />

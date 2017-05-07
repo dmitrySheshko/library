@@ -3,22 +3,25 @@ package com.library.order;
 import javax.servlet.http.HttpServletRequest;
 
 public class OrderFilter {
-	private String readerFullName;
+	private String readerFirstName;
+	private String readerLastName;
 	private String title;
 	private String author;
 	private int status;
 	
 	public OrderFilter(){}
 	
-	public OrderFilter(String readerFullName, String title, String author, int status){
-		this.readerFullName = readerFullName;
+	public OrderFilter(String readerFirstName, String readerLastName, String title, String author, int status){
+		this.readerFirstName = readerFirstName;
+		this.readerLastName = readerLastName;
 		this.title = title;
 		this.author = author;
 		this.status = status;
 	}
 	
 	public OrderFilter(HttpServletRequest request){
-		this.readerFullName = request.getParameter("reader");
+		this.readerFirstName = request.getParameter("readerFirstName");
+		this.readerLastName = request.getParameter("readerLastName");
 		this.title = request.getParameter("title");
 		this.author = request.getParameter("author");
 		if(request.getParameter("status") != null) {
@@ -42,19 +45,27 @@ public class OrderFilter {
 		this.author = author;
 	}
 
-	public String getReaderFullName() {
-		return readerFullName;
-	}
-
-	public void setReaderFullName(String readerFullName) {
-		this.readerFullName = readerFullName;
-	}
-
 	public int getStatus() {
 		return status;
 	}
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getReaderFirstName() {
+		return readerFirstName;
+	}
+
+	public void setReaderFirstName(String readerFirstName) {
+		this.readerFirstName = readerFirstName;
+	}
+
+	public String getReaderLastName() {
+		return readerLastName;
+	}
+
+	public void setReaderLastName(String readerLastName) {
+		this.readerLastName = readerLastName;
 	}
 }

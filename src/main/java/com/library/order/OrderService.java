@@ -1,6 +1,7 @@
 package com.library.order;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,14 +41,27 @@ public class OrderService {
 		return request.getParameterValues("bookIds");
 	}
 	
-	public List<Order> getOrders(){
-		try {
-			return daoOrder.findAll();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public List<Order> getOrders(HttpServletRequest request){
+		List<Order> orders = new ArrayList<Order>();
+		OrderFilter orderFilter = new OrderFilter(request);
+		if(isSetFilterParams(orderFilter)) {
+			try {
+				orders = daoOrder.findAll(getWhereString(orderFilter));
+				request.setAttribute("filter", orderFilter);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return null;
+		else {
+			try {
+				orders = daoOrder.findAll();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return orders;
 	}
 	
 	public Order getOrder(String urlPath){
@@ -102,5 +116,42 @@ public class OrderService {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private Boolean isSetFilterParams(OrderFilter orderFilter){
+		return checkFilterParam(orderFilter.getReaderFirstName()) || checkFilterParam(orderFilter.getReaderLastName()) || checkFilterParam(orderFilter.getTitle()) || checkFilterParam(orderFilter.getAuthor()) || checkFilterParam(orderFilter.getStatus());
+	}
+	
+	private Boolean checkFilterParam(String param){
+		return param != null && param.trim().length() != 0;
+	}
+	
+	private Boolean checkFilterParam(int param){
+		return param != 0;
+	}
+	
+	private String getWhereString(OrderFilter orderFilter){
+		List<String> temp = new ArrayList<String>(); //[]
+		if(checkFilterParam(orderFilter.getReaderFirstName())){
+			temp.add("reader.firstName LIKE '%" + orderFilter.getReaderFirstName() + "%'");
+		}
+		if(checkFilterParam(orderFilter.getReaderLastName())){
+			temp.add("reader.lastName LIKE '%" + orderFilter.getReaderLastName() + "%'");
+		}
+		if(checkFilterParam(orderFilter.getTitle())){
+			temp.add("b.title LIKE '%" + orderFilter.getTitle() + "%'");
+		}
+		if(checkFilterParam(orderFilter.getAuthor())){
+			temp.add("b.author LIKE '%" + orderFilter.getAuthor() + "%'");
+		}
+		if(checkFilterParam(orderFilter.getStatus())){
+			if(orderFilter.getStatus() == 1) {
+				temp.add("o.status = 1");
+			}
+			if(orderFilter.getStatus() == 2) {
+				temp.add("o.status = 0");
+			}
+		}
+		return String.join(" AND ", temp);
 	}
 }
