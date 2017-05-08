@@ -8,13 +8,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.library.users.User;
+
 @WebServlet("/auth/sign-out")
 public class SignOutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().invalidate();
-        response.sendRedirect("/auth/sign-in");
+		User user = (User)request.getSession().getAttribute("sessionUser");
+		if(user == null) {
+			response.sendRedirect("/");
+		}
+		else {
+			request.getSession().invalidate();
+	        response.sendRedirect("/auth/sign-in");
+		}
 	}
 	
 }

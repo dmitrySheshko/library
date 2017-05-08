@@ -1,6 +1,7 @@
 package com.library.filters;
 
 import java.io.IOException;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -10,14 +11,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 
-@WebFilter(urlPatterns={ "/*" })
-public class PagesAccessFilter implements Filter {
+import com.library.users.User;
 
+@WebFilter(urlPatterns={ "/book/*", "/orders", "/add-book", "/categories", "/add-category", "/order/*" })
+public class LibrarianAccessPagesFilter implements Filter {
 	private CheckUserAccess checkUserAccess = new CheckUserAccess();
     /**
      * Default constructor. 
      */
-    public PagesAccessFilter() {
+    public LibrarianAccessPagesFilter() {
         // TODO Auto-generated constructor stub
     }
 
@@ -32,7 +34,8 @@ public class PagesAccessFilter implements Filter {
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		if(checkUserAccess.checkAccess(request)) {
+		User user = checkUserAccess.getUser(request);
+		if(user != null && user.getRole() != 3) {
 			chain.doFilter(request, response);
 		}
 		else {
@@ -47,5 +50,4 @@ public class PagesAccessFilter implements Filter {
 	public void init(FilterConfig fConfig) throws ServletException {
 		// TODO Auto-generated method stub
 	}
-
 }

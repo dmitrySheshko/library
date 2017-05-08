@@ -80,7 +80,7 @@ public class OrderService {
 	}
 	
 	public void orderHandler(HttpServletRequest request){
-		User librarian = getUserFromSession(request);
+		User user = getUserFromSession(request);
 		String requestType = (String)request.getParameter("type");
 		int orderType = 0;
 		String reqOrderType = request.getParameter("orderType");
@@ -88,28 +88,28 @@ public class OrderService {
 			orderType = Integer.parseInt(request.getParameter("orderType"));
 		}
 		int orderId = Integer.parseInt(request.getParameter("id"));
-		if(requestType.equals("issue")){
+		if(requestType.equals("issue") && user.getRole() != 3){
 			try {
-				daoOrder.issueBook(orderId, librarian.getId(), orderType);
+				daoOrder.issueBook(orderId, user.getId(), orderType);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		if(requestType.equals("return")){
+		if(requestType.equals("return") && user.getRole() != 3){
 			try {
 				daoOrder.returnBook(orderId);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		if(requestType.equals("cancel")){
+		if(requestType.equals("cancel") && user.getRole() != 3){
 			try {
 				daoOrder.changeStatus(orderId);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		if(requestType.equals("deleteByUser")) {
+		if(requestType.equals("deleteByUser") && user.getRole() == 3) {
 			try {
 				daoOrder.delete(orderId);
 			} catch (SQLException e) {

@@ -16,7 +16,7 @@
 				</div>
 			</c:if>
 
-			<form action="/order" method="post">
+			<form action="/order-handler" method="post">
 				<table class="table table-striped table-hover">
 					<tr>
 						<th></th>
