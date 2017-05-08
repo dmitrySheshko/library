@@ -19,7 +19,6 @@ public class DeleteBookServlet extends HttpServlet {
 			request.setAttribute("error", error);
 			request.setAttribute("book", book);
 			request.setAttribute("categories", bookService.getCategories());
-			response.setContentType("text/html");
 	        request.getRequestDispatcher("/views/books/edit-book.jsp").forward(request, response);
 		}
 		else {

@@ -21,7 +21,6 @@ public class OfficeEditProfileServlet extends HttpServlet {
 		else {
 			officeService.getUser(request);
 			request.setAttribute("error", error);
-			response.setContentType("text/html");
 	        request.getRequestDispatcher("/views/office/office.jsp").forward(request, response);
 		}
 	}

@@ -19,7 +19,6 @@ public class BooksServlet extends HttpServlet {
 		List<Book> books = bookService.getBooks(request);
 		request.setAttribute("books", books);
 		request.setAttribute("categories", bookService.getCategories());
-		response.setContentType("text/html");
         request.getRequestDispatcher("/views/books/books.jsp").forward(request, response);
 	}
 }

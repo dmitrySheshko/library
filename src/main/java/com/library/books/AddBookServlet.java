@@ -28,7 +28,6 @@ public class AddBookServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		request.setAttribute("categories", categories);
-		response.setContentType("text/html");
         request.getRequestDispatcher("/views/books/add-book.jsp").forward(request, response);
 	}
 	

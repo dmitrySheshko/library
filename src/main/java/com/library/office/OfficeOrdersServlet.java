@@ -17,9 +17,4 @@ public class OfficeOrdersServlet extends HttpServlet {
 		officeService.getUserActiveOrders(request);
         request.getRequestDispatcher("/views/office/office-orders.jsp").forward(request, response);
 	}
-	
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
 }

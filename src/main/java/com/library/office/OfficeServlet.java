@@ -14,7 +14,6 @@ public class OfficeServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		officeService.getUser(request);
-		response.setContentType("text/html");
         request.getRequestDispatcher("/views/office/office.jsp").forward(request, response);
 	}
 }

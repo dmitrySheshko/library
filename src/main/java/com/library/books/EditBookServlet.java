@@ -18,7 +18,6 @@ public class EditBookServlet extends HttpServlet {
 		Book book = bookService.find(request.getPathInfo());	
 		request.setAttribute("book", book);
 		request.setAttribute("categories", bookService.getCategories());
-		response.setContentType("text/html");
         request.getRequestDispatcher("/views/books/edit-book.jsp").forward(request, response);
 	}
 	
@@ -26,7 +25,6 @@ public class EditBookServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		bookService.editBook(request);
 		request.setAttribute("categories", bookService.getCategories());
-		response.setContentType("text/html");
         request.getRequestDispatcher("/views/books/edit-book.jsp").forward(request, response);
 	}
 }
